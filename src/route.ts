@@ -14,13 +14,13 @@ export function route(app: Application, ctx: ApplicationContext): void {
   app.patch("/users/:id", ctx.user.patch);
   app.delete("/users/:id", ctx.user.delete);
 
-  app.post("/touraments/search", ctx.tourament.search);
-  app.get("/touraments/search", ctx.tourament.search);
-  app.get("/touraments/:id", ctx.tourament.load);
-  app.post("/touraments", ctx.tourament.create);
-  app.put("/touraments/:id", ctx.tourament.update);
-  app.patch("/touraments/:id", ctx.tourament.patch);
-  app.delete("/touraments/:id", ctx.tourament.delete);
+  app.post("/tournaments/search", ctx.tournament.search);
+  app.get("/tournaments/search", ctx.tournament.search);
+  app.get("/tournaments/:id", ctx.tournament.load);
+  app.post("/tournaments", ctx.tournament.create);
+  app.put("/tournaments/:id", ctx.tournament.update);
+  app.patch("/tournaments/:id", ctx.tournament.patch);
+  app.delete("/tournaments/:id", ctx.tournament.delete);
 
   app.post("/leagues/search", ctx.league.search);
   app.get("/leagues/search", ctx.league.search);
