@@ -43,7 +43,7 @@ create table touraments
     description character varying(120),
     startDate character varying(45),
     endDate character varying(45),
-     kind character varying(40),
+    kind character varying(40),
     status character varying(40),
     leagueId character varying (40),
     constraint touraments_pkey primary key (id)
@@ -62,7 +62,7 @@ create table leagues
 );
 
 
-insert into touraments (id, username, email, phone, date_of_birth, interests, skills, achievements, settings) values ('ironman', 'tony.stark', 'tony.stark@gmail.com', '0987654321', '1963-03-25', '{Photography,Football}', '{"{\"skill\": \"Java\", \"hirable\": true}"}', '{"{\"subject\": \"test3\", \"description\": \"tesssssssssss\"}"}', '{"language": "English", "dateFormat": "dd/mm/yyyy", "timeFormat": "hh:mm:ss", "notification": true, "dateTimeFormat": "dd-mm-yyyy:hh:mm"}');
+insert into touraments (id, name, email, phone, date_of_birth, interests, skills, achievements, settings) values ('ironman', 'tony.stark', 'tony.stark@gmail.com', '0987654321', '1963-03-25', '{Photography,Football}', '{"{\"skill\": \"Java\", \"hirable\": true}"}', '{"{\"subject\": \"test3\", \"description\": \"tesssssssssss\"}"}', '{"language": "English", "dateFormat": "dd/mm/yyyy", "timeFormat": "hh:mm:ss", "notification": true, "dateTimeFormat": "dd-mm-yyyy:hh:mm"}');
 
 create table teams(
     id character varying(40) not null,
@@ -88,3 +88,17 @@ insert into players (id, name, dateOfBirth) values ('0001','Đặng Thị Kim Th
 insert into players (id, name, dateOfBirth) values ('0002','Trần Thị Thanh Thúy','1997-11-12');
 insert into players (id, name, dateOfBirth) values ('0003','Trần Thị Tuyết Hoa','1991-04-14');
 insert into players (id, name, dateOfBirth) values ('0004','Huỳnh Thị Hồng Nhung','1994-07-04');
+
+
+create table match (
+id character varying(40) not null,
+touramentId character varying(40),
+round character varying(40),
+team1 character varying(120),
+team2 character varying(120),
+score1 integer DEFAULT 0,
+score2 integer DEFAULT 0,
+dateAt timestamp with time zone
+); 
+
+insert into match (id, touramentId, round, team1, team2, score1, core2, dateAt) values ('01','ironman','01','VTV Bình Điền Long An','Ngân hàng Công thương',2,1,'2022-06-22');
