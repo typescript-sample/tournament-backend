@@ -13,7 +13,9 @@ import { createValidator } from "xvalidators";
 import { UserController, useUserController } from "./user";
 import { LeagueController } from "league/league-controller";
 import { useLeagueController } from "./league";
-
+import { TeamController, useTeamController } from './team';
+import { PlayerController, usePlayerController } from './player';
+import { MatchController, useMatchController } from "../src/tournament/match";
 resources.createValidator = createValidator;
 
 export interface ApplicationContext {
@@ -23,6 +25,9 @@ export interface ApplicationContext {
   user: UserController;
   tournament: TournamentController;
   league: LeagueController;
+  team:TeamController;
+  player:PlayerController;
+  match: MatchController;
 }
 export function useContext(
   db: DB,
@@ -38,6 +43,8 @@ export function useContext(
   const user = useUserController(logger.error, db, mapper);
   const tournament = useTournamentController(logger.error, db, mapper);
   const league = useLeagueController(logger.error, db, mapper);
-
-  return { health, log, middleware, user, tournament, league };
+  const team = useTeamController(logger.error, db);
+  const player = usePlayerController(logger.error, db);
+  const match = useMatchController(logger.error, db);
+  return { health, log, middleware, user, tournament, league,team, player, match };
 }

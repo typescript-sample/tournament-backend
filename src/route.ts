@@ -29,4 +29,28 @@ export function route(app: Application, ctx: ApplicationContext): void {
   app.put("/leagues/:id", ctx.league.update);
   app.patch("/leagues/:id", ctx.league.patch);
   app.delete("/leagues/:id", ctx.league.delete);
+  
+  app.post('/teams/search', ctx.team.search);
+  app.get('/teams/search', ctx.team.search);
+  app.get('/teams/:id', ctx.team.load);
+  app.post('/teams', ctx.team.create);
+  app.put('/teams/:id', ctx.team.update);
+  app.patch('/teams/:id', ctx.team.patch);
+  app.delete('/teams/:id', ctx.team.delete);
+
+  app.post('/players/search', ctx.player.search);
+  app.get('/players/search', ctx.player.search);
+  app.get('/players/:id', ctx.player.load);
+  app.post('/players', ctx.player.create);
+  app.put('/players/:id', ctx.player.update);
+  app.patch('/players/:id', ctx.player.patch);
+  app.delete('/players/:id', ctx.player.delete);
+
+  app.post("/match/search", ctx.match.search);
+  app.get("/match/search", ctx.match.search);
+  app.get("/match/:id", ctx.match.load);
+  app.post("/match", ctx.match.create);
+  app.put("/match/:id", ctx.match.update);
+  app.patch("/match/:id", ctx.match.patch);
+  app.delete("/match/:id", ctx.match.delete);
 }
