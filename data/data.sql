@@ -92,8 +92,8 @@ insert into players (id, name, dateOfBirth) values ('0004','Huỳnh Thị Hồng
 
 create table match (
     id character varying(40) not null,
-    touramentid character varying(40),
-    round character varying(40),
+    tournamentid character varying(40),
+    status character varying(40),
     team1 character varying(120),
     team2 character varying(120),
     score1 integer DEFAULT 0,
@@ -101,4 +101,4 @@ create table match (
     time timestamp with time zone
 ); 
 
-insert into match (id, touramentid, round, team1, team2, score1, core2, time) values ('01','ironman','01','VTV Bình Điền Long An','Ngân hàng Công thương',2,1,'2022-06-22');
+insert into match (id, tournamentid, status, team1, team2, score1, score2, time) values ('football','ironman','enrollment','VTV Bình Điền Long An','Ngân hàng Công thương',2,1,'2022-06-22');
