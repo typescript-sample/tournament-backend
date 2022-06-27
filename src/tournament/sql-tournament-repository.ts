@@ -10,6 +10,6 @@ export class SqlTournamentRepository
   implements TournamentRepository
 {
   constructor(db: DB) {
-    super(db, "touraments", tournamentModel);
+    super(db, "tournaments", tournamentModel);
   }
 }

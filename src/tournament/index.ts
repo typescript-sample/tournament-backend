@@ -28,7 +28,7 @@ export function useTournamentService(
   db: DB,
   mapper?: TemplateMap
 ): TournamentService {
-  const query = useQuery("tournament", mapper, tournamentModel, true);
+  const query = useQuery("tournaments", mapper, tournamentModel, true);
   const builder = new SearchBuilder<Tournament, TournamentFilter>(
     db.query,
     "tournaments",
