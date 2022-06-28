@@ -2,49 +2,43 @@ import { Attributes, DateRange, Filter, Repository, Service } from "onecore";
 
 export interface Match {
     id: string;
-    touramentId: string;
+    touramentid: string;
     round: string;
     team1: string;
     team2: string;
     score1: string;
     score2: string;
-    dateAt: string;
+    time: string;
 }
 
 export interface MatchRepository extends Repository<Match, string> {}
 
 export interface MatchService
-  extends Service<Match, string, MatchFilter> {}
+  extends Service<Match, string, MatchFilter> {
+    getMatches(tournamentId: string, round: string): Promise<Match>
+  }
 
 export const matchModel: Attributes = {
   id: {
     key: true,
     match: "equal",
   },
-  touramentId: {
-    required: true,
-  },
-  round: {
-    required: true,
-  },
-  team1: {
-    required: true,
-  },
-  team2: {
-    required: true,
-  },
+  touramentid: {},
+  round: {},
+  team1: {},
+  team2: {},
   score1: {},
   score2: {},
-  dateAt: {},
+  time: {},
 };
 
 export interface MatchFilter extends Filter {
     id: string;
-    touramentId: string;
+    touramentid: string;
     round: string;
     team1: string;
     team2: string;
     score1: string;
     score2: string;
-    dateAt: Date;
+    time: Date;
 }

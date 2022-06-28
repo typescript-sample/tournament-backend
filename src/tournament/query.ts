@@ -14,6 +14,6 @@ export function buildQuery(s: TournamentFilter): Statement {
     where.push(`id = $${i++}`);
     params.push(s.id);
   }
-
+  console.log(query);
   return { query, params };
 }

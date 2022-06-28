@@ -11,6 +11,9 @@ export class MatchManager extends Manager<Match, string, MatchFilter> implements
   constructor(search: Search<Match, MatchFilter>, repository: MatchRepository) {
     super(search, repository);
   }
+  getMatches(tournamentId: string, round: string): Promise<Match> {
+    return null;
+  }
 }
 export function useMatchService(db: DB): MatchService {
   const builder = new SearchBuilder<Match, MatchFilter>(db.query, 'match', matchModel, postgres, buildQuery);

@@ -17,6 +17,7 @@ export function route(app: Application, ctx: ApplicationContext): void {
   app.post("/tournaments/search", ctx.tournament.search);
   app.get("/tournaments/search", ctx.tournament.search);
   app.get("/tournaments/:id", ctx.tournament.load);
+  app.get("/tournaments/:id/matches/:round", ctx.tournament.load);
   app.post("/tournaments", ctx.tournament.create);
   app.put("/tournaments/:id", ctx.tournament.update);
   app.patch("/tournaments/:id", ctx.tournament.patch);
@@ -48,6 +49,7 @@ export function route(app: Application, ctx: ApplicationContext): void {
 
   app.post("/match/search", ctx.match.search);
   app.get("/match/search", ctx.match.search);
+  app.get("/match/:id", ctx.match.load);
   app.get("/match/:id", ctx.match.load);
   app.post("/match", ctx.match.create);
   app.put("/match/:id", ctx.match.update);
