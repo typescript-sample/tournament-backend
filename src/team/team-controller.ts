@@ -1,8 +1,8 @@
-import { Controller, Log } from 'express-ext';
-import { Teams, TeamFilter, TeamService } from './team';
+import { Controller, Log } from "express-ext";
+import { Team, TeamFilter, TeamService } from "./team";
 
-export class TeamController extends Controller<Teams, string, TeamFilter> {
-    constructor(log: Log, TeamService: TeamService) {
-        super(log, TeamService);
-    }
+export class TeamController extends Controller<Team, string, TeamFilter> {
+  constructor(log: Log, teamService: TeamService) {
+    super(log, teamService);
+  }
 }

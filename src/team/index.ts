@@ -1,22 +1,41 @@
-import { Log, Manager, Search } from 'onecore';
-import { DB, postgres, SearchBuilder } from 'query-core';
-import { buildQuery } from './query';
-import { Teams, TeamFilter, TeamModel, TeamRepository, TeamService } from './team';
-import { TeamController } from './team-controller';
-export * from './team';
-export { TeamController };
-import { SqlTeamRepository } from './sql-team-repository';
+import { Log, Manager, Search } from "onecore";
+import { DB, postgres, SearchBuilder } from "query-core";
+import { TemplateMap, useQuery } from "query-mappers";
+import { SqlTeamRepository } from "./sql-team-repository";
 
-export class TeamManager extends Manager<Teams, string, TeamFilter> implements TeamService {
-  constructor(search: Search<Teams, TeamFilter>, repository: TeamRepository) {
+import {
+  Team,
+  TeamFilter,
+  teamModel,
+  TeamRepository,
+  TeamService,
+} from "./team";
+import { TeamController } from "./team-controller";
+
+export class TeamManager
+  extends Manager<Team, string, TeamFilter>
+  implements TeamService
+{
+  constructor(search: Search<Team, TeamFilter>, repository: TeamRepository) {
     super(search, repository);
   }
 }
-export function useTeamService(db: DB): TeamService {
-  const builder = new SearchBuilder<Teams, TeamFilter>(db.query, 'teams', TeamModel, postgres, buildQuery);
+export function useTeamService(db: DB, mapper?: TemplateMap): TeamService {
+  const query = useQuery("teams", mapper, teamModel, true);
+  const builder = new SearchBuilder<Team, TeamFilter>(
+    db.query,
+    "teams",
+    teamModel,
+    postgres,
+    query
+  );
   const repository = new SqlTeamRepository(db);
   return new TeamManager(builder.search, repository);
 }
-export function useTeamController(log: Log, db: DB): TeamController {
-  return new TeamController(log, useTeamService(db));
+export function useTeamController(
+  log: Log,
+  db: DB,
+  mapper?: TemplateMap
+): TeamController {
+  return new TeamController(log, useTeamService(db, mapper));
 }

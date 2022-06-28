@@ -1,30 +1,43 @@
-import { Attributes, Filter, Repository, Service } from 'onecore';
+import { Attributes, DateRange, Filter, Repository, Service } from "onecore";
 
-export interface Teams {
-    id: string;
-    name: string;
-    decription: string;
-    logo: string;
-    status: string;
+export interface Team {
+  id: string;
+  teamname: string;
+  teamlogo: string;
+  stadiumname: string;
+  stadiumpic: string;
+  description: string;
+  status: string;
+  tournamentId: string;
 }
-export interface TeamFilter extends Filter {
-    id: string;
-    name: string;
-    decription: string;
-    logo: string;
-    status: string;
-}
-export interface TeamRepository extends Repository<Teams, string> {
-}
-export interface TeamService extends Service<Teams, string, TeamFilter> {
-}
-export const TeamModel: Attributes = {
-    id: {
-        key: true,
-        match: 'equal'
-    },
-    name: {},
-    decription: {},
-    logo: {},
-    status: {},
+
+export interface TeamRepository extends Repository<Team, string> {}
+
+export interface TeamService extends Service<Team, string, TeamFilter> {}
+
+export const teamModel: Attributes = {
+  id: {
+    key: true,
+    match: "equal",
+  },
+  teamname: {
+    required: true,
+  },
+  teamlogo: {},
+  stadiumname: {},
+  stadiumpic: {},
+  description: {},
+  status: {},
+  tournamentId: {},
 };
+
+export interface TeamFilter extends Filter {
+  id: string;
+  teamname: string;
+  teamlogo: string;
+  stadiumname: string;
+  stadiumpic: string;
+  description: string;
+  status: string;
+  tournamentId: string;
+}
