@@ -102,3 +102,18 @@ create table match (
 ); 
 
 insert into match (id, touramentid, round, team1, team2, score1, core2, time) values ('01','ironman','01','VTV Bình Điền Long An','Ngân hàng Công thương',2,1,'2022-06-22');
+
+
+
+insert into teams (id, teamname, teamlogo, stadiumname,stadiumpic,description,status,touramentId) values ('PL1','Brooklyn Nets','unknown','unknown','hello form downtown','2022-2023 NBA Champs',"draft","test id");
+
+create table teams (
+    id character varying(40) not null,
+    teamname character varying(40),
+    teamlogo character varying(200),
+    stadiumname character varying(40),
+    stadiumpic character varying(200),
+    description character varying(200),
+    status character varying(40),
+    touramentId character varying(40),
+); 

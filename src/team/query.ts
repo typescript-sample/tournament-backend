@@ -1,6 +1,5 @@
 import { Statement } from "query-core";
 import { TeamFilter } from "./team";
-
 export function buildQuery(s: TeamFilter): Statement {
   let query = `select * from teams`;
   const where = [];
