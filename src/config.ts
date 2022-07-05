@@ -26,8 +26,8 @@ export const config = {
   db: {
     user: "postgres",
     host: "localhost",
-    password: "Nothingtosay123!",
-    database: "nothingtosay",
+    password: "123321",
+    database: "masterdata2",
     port: 5432,
   },
 };
