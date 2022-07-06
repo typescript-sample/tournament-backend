@@ -1,5 +1,9 @@
 import { Application } from "express";
+import { Pool } from "pg";
 import { ApplicationContext } from "./context";
+import {getRoundGenerated} from "./controllers/round"
+import { nextPool } from "./middleware/nextPool";
+
 
 export function route(app: Application, ctx: ApplicationContext): void {
   app.get("/health", ctx.health.check);
@@ -53,4 +57,10 @@ export function route(app: Application, ctx: ApplicationContext): void {
   app.put("/teams/:id", ctx.team.update);
   app.patch("/teams/:id", ctx.team.patch);
   app.delete("/teams/:id", ctx.team.delete);
+  
+ 
+}
+
+export function routeRound(link: string,app: Application ,pool: Pool):void{
+  app.get(`${link}`,nextPool,getRoundGenerated);
 }

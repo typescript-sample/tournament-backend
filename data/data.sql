@@ -105,7 +105,7 @@ insert into match (id, touramentid, round, team1, team2, score1, core2, time) va
 
 
 
-insert into teams (id, teamname, teamlogo, stadiumname,stadiumpic,description,status,touramentId) values ('PL1','Brooklyn Nets','unknown','unknown','hello form downtown','2022-2023 NBA Champs',"draft","test id");
+insert into teams (id, teamname, teamlogo, stadiumname,stadiumpic,description,status,tournamentId) values ('PL1','Brooklyn Nets','unknown','unknown','hello form downtown','2022-2023 NBA Champs','draft','test id');
 
 create table teams (
     id character varying(40) not null,

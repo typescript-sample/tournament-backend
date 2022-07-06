@@ -1,13 +1,10 @@
 import { randomNumber } from "./randomNumber";
+import {Team} from "../team/team"
+import { QueryResult } from "pg";
 
 interface Round{
     doi1: string;
     doi2: string;
-}
-
-interface Team{
-    id: number;
-    name: string;
 }
 
 export const generateRound =(teamArray: Team[]) =>{

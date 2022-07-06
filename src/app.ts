@@ -11,7 +11,7 @@ import { log } from "query-core";
 import { buildTemplates, trim } from "query-mappers";
 import { config, env } from "./config";
 import { useContext } from "./context";
-import { route } from "./route";
+import { route, routeRound } from "./route";
 
 dotenv.config();
 const conf = merge(config, process.env, env, process.env.ENV);
@@ -43,11 +43,7 @@ pool.connect().then((client) => {
 const db = log(new PoolManager(pool), conf.log.db, logger, "sql");
 const ctx = useContext(db, logger, middleware, templates);
 route(app, ctx);
-
-const team = [{id: 1,name: "Doi1"},{id: 2,name: "Doi2"},{id: 3,name: "Doi3"},{id: 4,name: "Doi4"},{id: 5,name: "Doi5"},{id: 6,name: "Doi6"},{id: 7,name: "Doi7"},{id: 8,name: "Doi8"},{id: 9,name: "Doi9"},{id: 10,name: "Doi10"}]
-
-console.log(generateRound(team))
-
+routeRound("/rounds",app,pool);
 http.createServer(app).listen(conf.port, () => {
   console.log("Start server at port " + conf.port);
 });
