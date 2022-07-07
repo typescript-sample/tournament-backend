@@ -9,11 +9,17 @@ export interface Team {
   description: string;
   status: string;
   tournamentId: string;
+  eliminated: boolean;
+  dateCreated: Date;
 }
 
-export interface TeamRepository extends Repository<Team, string> {}
+export interface TeamRepository extends Repository<Team, string> {
+  getTeamByTournamentId(tournamentId: string): Promise<Team[]>;
+}
 
-export interface TeamService extends Service<Team, string, TeamFilter> {}
+export interface TeamService extends Service<Team, string, TeamFilter> {
+  getTeamByTournamentId(tournamentId: string): Promise<Team[]>;
+}
 
 export const teamModel: Attributes = {
   id: {
@@ -40,4 +46,6 @@ export interface TeamFilter extends Filter {
   description: string;
   status: string;
   tournamentId: string;
+  eliminated: boolean;
+  dateCreated: Date;
 }

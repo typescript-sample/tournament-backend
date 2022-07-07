@@ -11,7 +11,7 @@ import { log } from "query-core";
 import { buildTemplates, trim } from "query-mappers";
 import { config, env } from "./config";
 import { useContext } from "./context";
-import { route, routeRound } from "./route";
+import { route } from "./route";
 
 dotenv.config();
 const conf = merge(config, process.env, env, process.env.ENV);
@@ -42,8 +42,9 @@ pool.connect().then((client) => {
 
 const db = log(new PoolManager(pool), conf.log.db, logger, "sql");
 const ctx = useContext(db, logger, middleware, templates);
+
 route(app, ctx);
-routeRound("/rounds",app,pool);
+
 http.createServer(app).listen(conf.port, () => {
   console.log("Start server at port " + conf.port);
 });

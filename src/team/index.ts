@@ -16,8 +16,14 @@ export class TeamManager
   extends Manager<Team, string, TeamFilter>
   implements TeamService
 {
-  constructor(search: Search<Team, TeamFilter>, repository: TeamRepository) {
-    super(search, repository);
+  constructor(
+    search: Search<Team, TeamFilter>,
+    protected teamrepository: TeamRepository
+  ) {
+    super(search, teamrepository);
+  }
+  getTeamByTournamentId(tournamentId: string): Promise<Team[]> {
+    return this.teamrepository.getTeamByTournamentId(tournamentId);
   }
 }
 export function useTeamService(db: DB, mapper?: TemplateMap): TeamService {

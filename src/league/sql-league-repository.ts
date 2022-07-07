@@ -1,4 +1,5 @@
 import { DB, Repository } from "query-core";
+import { Match } from "match";
 import { League, leagueModel, LeagueRepository } from "./league";
 
 export class SqlLeagueRepository

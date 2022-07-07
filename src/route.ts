@@ -1,10 +1,6 @@
 import { Application } from "express";
 import { Pool } from "pg";
 import { ApplicationContext } from "./context";
-import {getRoundGenerated} from "./controllers/round"
-import { nextPool } from "./middleware/nextPool";
-
-
 export function route(app: Application, ctx: ApplicationContext): void {
   app.get("/health", ctx.health.check);
   app.patch("/log", ctx.log.config);
@@ -42,13 +38,14 @@ export function route(app: Application, ctx: ApplicationContext): void {
   app.patch("/players/:id", ctx.player.patch);
   app.delete("/players/:id", ctx.player.delete);
 
-  app.post("/match/search", ctx.match.search);
-  app.get("/match/search", ctx.match.search);
-  app.get("/match/:id", ctx.match.load);
-  app.post("/match", ctx.match.create);
-  app.put("/match/:id", ctx.match.update);
-  app.patch("/match/:id", ctx.match.patch);
-  app.delete("/match/:id", ctx.match.delete);
+  app.post("/matchs/search", ctx.match.search);
+  app.get("/matchs/search", ctx.match.search);
+  app.get("/matchs/:id", ctx.match.load);
+  app.post("/matchs", ctx.match.create);
+  app.put("/matchs/:id", ctx.match.update);
+  app.patch("/matchs/:id", ctx.match.patch);
+  app.delete("/matchs/:id", ctx.match.delete);
+  app.get("/matchs/:tournament/:round", ctx.match.getMatches);
 
   app.post("/teams/search", ctx.team.search);
   app.get("/teams/search", ctx.team.search);
@@ -57,10 +54,5 @@ export function route(app: Application, ctx: ApplicationContext): void {
   app.put("/teams/:id", ctx.team.update);
   app.patch("/teams/:id", ctx.team.patch);
   app.delete("/teams/:id", ctx.team.delete);
-  
- 
-}
-
-export function routeRound(link: string,app: Application ,pool: Pool):void{
-  app.get(`${link}`,nextPool,getRoundGenerated);
+  app.get("/teams/:tournament", ctx.team.getTeamByTournamentId);
 }

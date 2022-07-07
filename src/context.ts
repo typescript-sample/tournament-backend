@@ -15,7 +15,7 @@ import { LeagueController } from "league/league-controller";
 import { useLeagueController } from "./league";
 
 import { PlayerController, usePlayerController } from "./player";
-import { MatchController, useMatchController } from "../src/tournament/match";
+import { MatchController, useMatchController } from "./match";
 import { TeamController } from "./team/team-controller";
 import { useTeamController } from "./team";
 resources.createValidator = createValidator;

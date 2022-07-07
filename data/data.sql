@@ -90,30 +90,34 @@ insert into players (id, name, dateOfBirth) values ('0003','Trần Thị Tuyết
 insert into players (id, name, dateOfBirth) values ('0004','Huỳnh Thị Hồng Nhung','1994-07-04');
 
 
-create table match (
-    id character varying(40) not null,
-    touramentid character varying(40),
+create table matchs (
+    id SERIAL,
+    touramentId character varying(40),
     round character varying(40),
     team1 character varying(120),
     team2 character varying(120),
     score1 integer DEFAULT 0,
     score2 integer DEFAULT 0,
-    time timestamp with time zone
+    dateCreated timestamp with time zone,
+    constraint matchs_pkey primary key (id)
 ); 
 
-insert into match (id, touramentid, round, team1, team2, score1, core2, time) values ('01','ironman','01','VTV Bình Điền Long An','Ngân hàng Công thương',2,1,'2022-06-22');
+insert into match (id, touramentId, round, team1, team2, score1, core2, time) values (DEFAULT,'ironman','01','VTV Bình Điền Long An','Ngân hàng Công thương',2,1,'2022-06-22');
 
 
 
-insert into teams (id, teamname, teamlogo, stadiumname,stadiumpic,description,status,tournamentId) values ('PL1','Brooklyn Nets','unknown','unknown','hello form downtown','2022-2023 NBA Champs','draft','test id');
+insert into teams (id, teamname, teamlogo, stadiumname,stadiumpic,description,status,tournamentId) values (DEFAULT,'Brooklyn Nets','unknown','unknown','hello form downtown','2022-2023 NBA Champs','draft','test id');
 
 create table teams (
-    id character varying(40) not null,
+    id SERIAL,
     teamname character varying(40),
     teamlogo character varying(200),
     stadiumname character varying(40),
     stadiumpic character varying(200),
     description character varying(200),
     status character varying(40),
-    touramentId character varying(40),
+    tournamentId character varying(40),
+    eliminated boolean default false,
+    dateCreate timestamp with time zone,
+    constraint teams_pkey primary key (id)
 ); 
