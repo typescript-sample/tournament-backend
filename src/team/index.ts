@@ -1,5 +1,5 @@
 import { Log, Manager, Search } from "onecore";
-import { DB, postgres, SearchBuilder } from "query-core";
+import { DB, postgres, SearchBuilder, buildToInsertBatch } from "query-core";
 import { TemplateMap, useQuery } from "query-mappers";
 import { SqlTeamRepository } from "./sql-team-repository";
 export { TeamController };

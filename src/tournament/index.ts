@@ -1,10 +1,19 @@
 import { Log, Manager, Search } from "onecore";
-import { DB, postgres, SearchBuilder } from "query-core";
+import { DB, postgres, SearchBuilder, buildToInsertBatch } from "query-core";
 import { TemplateMap, useQuery } from "query-mappers";
+import { SqlMatchRepository } from "./sql-match-repository";
+import { SqlRoundRepository } from "./sql-round-repository";
+import { SqlTeamRepository } from "./sql-team-repository";
 
 export { TournamentController };
 import { SqlTournamentRepository } from "./sql-tournament-repository";
 import {
+  Match,
+  MatchRepository,
+  Round,
+  RoundRepository,
+  Team,
+  TeamRepository,
   Tournament,
   TournamentFilter,
   tournamentModel,
@@ -19,9 +28,22 @@ export class TournamentManager
 {
   constructor(
     search: Search<Tournament, TournamentFilter>,
-    repository: TournamentRepository
+    protected tournamentRepository: TournamentRepository,
+    protected roundRepository: RoundRepository,
+    protected matchRepository: MatchRepository,
+    protected teamRepository: TeamRepository
   ) {
-    super(search, repository);
+    super(search, tournamentRepository);
+  }
+
+  buildToInsertMatches(matches: Match[], ctx?: any): Promise<number> {
+    return this.matchRepository.buildToInsertMatches(matches, ctx);
+  }
+  getTeamByTournament(tournament: string): Promise<Team[]> {
+    return this.teamRepository.getTeamByTournament(tournament);
+  }
+  getRoundByTournament(tournament: string): Promise<Round[]> {
+    return this.roundRepository.getRoundByTournament(tournament);
   }
 }
 export function useTournamentService(
@@ -36,8 +58,19 @@ export function useTournamentService(
     postgres,
     query
   );
-  const repository = new SqlTournamentRepository(db);
-  return new TournamentManager(builder.search, repository);
+
+  const tournamentRepository = new SqlTournamentRepository(db);
+  const roundRepository = new SqlRoundRepository(db);
+  const matchRepository = new SqlMatchRepository(db);
+  const teamRepository = new SqlTeamRepository(db);
+
+  return new TournamentManager(
+    builder.search,
+    tournamentRepository,
+    roundRepository,
+    matchRepository,
+    teamRepository
+  );
 }
 export function useTournamentController(
   log: Log,

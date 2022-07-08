@@ -36,20 +36,21 @@ insert into users (id, username, email, phone, date_of_birth, interests, skills,
 insert into users (id, username, email, phone, date_of_birth, interests, skills, achievements, settings) values ('wolverine1', 'james.howlett', 'james.howlett@gmail.com', '0987654321', '1974-11-16', '{Basketball,Playgame}', '{"{\"skill\": \"Nodejs\", \"hirable\": false}","{\"skill\": \"React\", \"hirable\": false}"}','{"{\"subject\": \"test2\", \"description\": \"tesssssssssss\"}"}', '{"language": "Spanish","dateFormat": "dd/mm/yyyy","timeFormat": "hh:mm:ss","notification": true,"dateTimeFormat": "dd-mm-yyyy:hh:mm"}');
 
 
-create table touraments
+create table tournaments
 (
-    id character varying(40) not null,
+    id SERIAL,
     name character varying(120),
     description character varying(120),
-    startDate character varying(45),
-    endDate character varying(45),
-    kind character varying(40),
+    startDate  timestamp with time zone,
+    endDate  timestamp with time zone,
+    type character varying(40),
     status character varying(40),
-    leagueId character varying (40),
-    constraint touraments_pkey primary key (id)
-
-
+    createdAt timestamp with time zone default now(),
+    constraint tournaments_pkey primary key (id)
 );
+
+insert into tournaments (id, name, description, startdate, enddate, type, status) values (Default, 'LeagueB', 'TMA Solution lab6', '2022-8-7', '2022-8-7','roundrobin' , 'cai gi do');
+
 
 
 create table leagues
@@ -64,14 +65,14 @@ create table leagues
 
 insert into touraments (id, name, email, phone, date_of_birth, interests, skills, achievements, settings) values ('ironman', 'tony.stark', 'tony.stark@gmail.com', '0987654321', '1963-03-25', '{Photography,Football}', '{"{\"skill\": \"Java\", \"hirable\": true}"}', '{"{\"subject\": \"test3\", \"description\": \"tesssssssssss\"}"}', '{"language": "English", "dateFormat": "dd/mm/yyyy", "timeFormat": "hh:mm:ss", "notification": true, "dateTimeFormat": "dd-mm-yyyy:hh:mm"}');
 
-create table teams(
-    id character varying(40) not null,
-    name character varying(120),
-    logo character varying(200),
-    status character varying(120),
-    description character varying(120),
-    constraint teams_pkey primary key (id)
-);
+-- create table teams(
+--     id character varying(40) not null,
+--     name character varying(120),
+--     logo character varying(200),
+--     status character varying(120),
+--     description character varying(120),
+--     constraint teams_pkey primary key (id)
+-- );
 
 insert into teams (id, name, status, description,logo) values ('001','VTV Bình Điền Long An','A','bảng A','https://www.pioneeragrobiz.com/wp-content/uploads/2020/06/BFC-300x300.jpg');
 insert into teams (id, name, status, description,logo) values ('002','Ngân hàng Công thương','I','bảng A','https://media.loveitopcdn.com/3807/logo-viettinbank-1.png');
@@ -81,6 +82,7 @@ create table players(
     id character varying(40) not null,
     name character varying(120),
     dateOfBirth timestamp without time zone,
+    createdAt timestamp without time zone default now(),
     constraint players_pkey primary key (id)
 );
 
@@ -90,23 +92,23 @@ insert into players (id, name, dateOfBirth) values ('0003','Trần Thị Tuyết
 insert into players (id, name, dateOfBirth) values ('0004','Huỳnh Thị Hồng Nhung','1994-07-04');
 
 
-create table matchs (
+create table matches (
     id SERIAL,
-    touramentId character varying(40),
+    tournamentId character varying(40),
     round character varying(40),
     team1 character varying(120),
     team2 character varying(120),
     score1 integer DEFAULT 0,
     score2 integer DEFAULT 0,
-    dateCreated timestamp with time zone,
+    createdAt timestamp with time zone default now(),
     constraint matchs_pkey primary key (id)
 ); 
 
-insert into match (id, touramentId, round, team1, team2, score1, core2, time) values (DEFAULT,'ironman','01','VTV Bình Điền Long An','Ngân hàng Công thương',2,1,'2022-06-22');
+insert into matches (id, tournamentId, round, team1, team2, score1, score2, dateCreated) values (DEFAULT,'ironman','01','VTV Bình Điền Long An','Ngân hàng Công thương',2,1,'2022-06-22');
 
 
 
-insert into teams (id, teamname, teamlogo, stadiumname,stadiumpic,description,status,tournamentId) values (DEFAULT,'Brooklyn Nets','unknown','unknown','hello form downtown','2022-2023 NBA Champs','draft','test id');
+insert into teams (id, teamname, teamlogo, stadiumname,stadiumpic,description,status,tournamentId) values (DEFAULT,'ABC','https://www.pioneeragrobiz.com/wp-content/uploads/2020/06/BFC-300x300.jpg','unknown','hello form downtown','2022-2023 NBA Champs','draft','1');
 
 create table teams (
     id SERIAL,
@@ -118,6 +120,17 @@ create table teams (
     status character varying(40),
     tournamentId character varying(40),
     eliminated boolean default false,
-    dateCreate timestamp with time zone,
+    createdAt timestamp with time zone default now(),
     constraint teams_pkey primary key (id)
 ); 
+
+
+create table rounds
+(
+    id SERIAL,
+    roundname character varying(120),
+    tournamentid character varying(120),
+    matches json[],
+    createdAt: timestamp with time zone default now(),
+    constraint rounds_pkey primary key (id)
+);

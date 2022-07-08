@@ -5,6 +5,7 @@ export interface League {
   name: string;
   description: string;
   status: string;
+  createdAt: Date;
 }
 
 export interface LeagueRepository extends Repository<League, string> {}
@@ -25,6 +26,7 @@ export const leagueModel: Attributes = {
   kind: {},
   status: {},
   leagueId: {},
+  createdAt: { type: "datetime" },
 };
 
 export interface LeagueFilter extends Filter {
@@ -32,4 +34,5 @@ export interface LeagueFilter extends Filter {
   name: string;
   description: string;
   status: string;
+  createdAt: Date;
 }

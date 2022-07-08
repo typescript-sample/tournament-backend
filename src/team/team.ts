@@ -10,7 +10,7 @@ export interface Team {
   status: string;
   tournamentId: string;
   eliminated: boolean;
-  dateCreated: Date;
+  createdAt: Date;
 }
 
 export interface TeamRepository extends Repository<Team, string> {
@@ -35,6 +35,10 @@ export const teamModel: Attributes = {
   description: {},
   status: {},
   tournamentId: {},
+  eliminated: {
+    default: false,
+  },
+  createdAt: { type: "datetime" },
 };
 
 export interface TeamFilter extends Filter {
@@ -47,5 +51,5 @@ export interface TeamFilter extends Filter {
   status: string;
   tournamentId: string;
   eliminated: boolean;
-  dateCreated: Date;
+  createdAt: Date;
 }

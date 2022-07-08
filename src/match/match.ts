@@ -8,7 +8,7 @@ export interface Match {
   team2: string;
   score1: string;
   score2: string;
-  dateCreated: Date;
+  createdAt: Date;
 }
 
 export interface MatchRepository extends Repository<Match, string> {
@@ -38,7 +38,9 @@ export const matchModel: Attributes = {
   },
   score1: {},
   score2: {},
-  dateCreated: {},
+  createdAt: {
+    type: "datetime",
+  },
 };
 
 export interface MatchFilter extends Filter {
@@ -49,5 +51,5 @@ export interface MatchFilter extends Filter {
   team2: string;
   score1: string;
   score2: string;
-  dateCreated: Date;
+  createdAt: Date;
 }
