@@ -14,7 +14,7 @@ import {
 } from "./tournament";
 
 export class SqlRoundRepository
-  extends Repository<Match, string>
+  extends Repository<Round, string>
   implements RoundRepository
 {
   constructor(db: DB) {
@@ -27,4 +27,17 @@ export class SqlRoundRepository
       [tournament]
     );
   }
+
+  saveRound(round: Round): Promise<number> {
+    return this.insert(round);
+  }
+
+  // buildToInsertRound(rounds: Round[], ctx?: any): Promise<number> {
+  //   const stmt = buildToInsertBatch<Round>(rounds, "rounds", roundModel, param);
+  //   if (!stmt) {
+  //     return Promise.resolve(0);
+  //   } else {
+  //     return this.exec(stmt.query, stmt.params, ctx);
+  //   }
+  // }
 }

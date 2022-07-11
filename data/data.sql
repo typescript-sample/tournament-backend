@@ -38,18 +38,19 @@ insert into users (id, username, email, phone, date_of_birth, interests, skills,
 
 create table tournaments
 (
-    id SERIAL,
-    name character varying(120),
+    id character varying(40),
+    name character varying(40),
     description character varying(120),
     startDate  timestamp with time zone,
     endDate  timestamp with time zone,
     type character varying(40),
     status character varying(40),
+    competitor character varying(10),
     createdAt timestamp with time zone default now(),
     constraint tournaments_pkey primary key (id)
 );
 
-insert into tournaments (id, name, description, startdate, enddate, type, status) values (Default, 'LeagueB', 'TMA Solution lab6', '2022-8-7', '2022-8-7','roundrobin' , 'cai gi do');
+insert into tournaments (id, name, description, startdate, enddate, type, competitor ,status) values ('1', 'LeagueA', 'TMA Solution lab6', '2022-8-7', '2022-8-7','roundrobin' ,'double' ,'cai gi do');
 
 
 

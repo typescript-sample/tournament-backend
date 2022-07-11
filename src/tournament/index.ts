@@ -45,6 +45,12 @@ export class TournamentManager
   getRoundByTournament(tournament: string): Promise<Round[]> {
     return this.roundRepository.getRoundByTournament(tournament);
   }
+  getTournamentById(id: string): Promise<Tournament[]> {
+    return this.tournamentRepository.getTournamentById(id);
+  }
+  // buildToInsertRound(rounds: Round[], ctx?: any): Promise<number> {
+  //   return this.roundRepository.buildToInsertRound(rounds, ctx);
+  // }
 }
 export function useTournamentService(
   db: DB,

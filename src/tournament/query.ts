@@ -1,6 +1,12 @@
 import { Statement } from "query-core";
 import { Match, TournamentFilter } from "./tournament";
 import { Team } from "./tournament";
+import { nanoid } from "nanoid";
+
+interface Matches {
+  team: Team[];
+}
+[];
 
 export function buildQuery(s: TournamentFilter): Statement {
   let query = `select * from tournaments`;
@@ -20,11 +26,42 @@ export function buildQuery(s: TournamentFilter): Statement {
   return { query, params };
 }
 
-export const generateRound = (teamArray: Team[]) => {
-  let index = teamArray.length;
-  console.log(teamArray.length);
+export const generateRound = (
+  teamArray: Team[],
+  competitor: string
+): Matches[] => {
+  // let index = teamArray.length;
   const round = [];
+  // const ghostTeam = { id: "999", teamname: "ghost" };
+
+  if (teamArray.length % 2 === 1) round.push(null);
+
+  const round1 = round.concat(randomTeam(teamArray, competitor));
+  // const flagArray: number[] = [];
+  // do {
+  //   const team = randomNumber(0, teamArray.length - 1);
+
+  //   if (flagArray.indexOf(team) === -1) {
+  //     flagArray.push(team);
+  //     round.push(teamArray[team]);
+  //     index = index - 1;
+  //   }
+  // } while (index > 0);
+  const result = [];
+
+  round1.forEach((item, index) => {
+    if (index % 2 === 0) {
+      result.push(round1.slice(index, index + 2));
+    }
+  });
+
+  return result;
+};
+
+const randomTeam = (teamArray: Team[], competitor: string): Team[] => {
   const flagArray: number[] = [];
+  const round = [];
+  let index = teamArray.length;
   do {
     const team = randomNumber(0, teamArray.length - 1);
 
@@ -34,15 +71,13 @@ export const generateRound = (teamArray: Team[]) => {
       index = index - 1;
     }
   } while (index > 0);
-  const result = [];
+  let result = [...round];
 
-  round.forEach((item, index) => {
-    if (index % 2 === 0) {
-      result.push(round.slice(index, index + 2));
-    }
-  });
+  if (competitor === "double") {
+    result = [...round, ...round.reverse()];
+    // console.log(round);
+  }
 
-  //   console.log("result->28", result);
   return result;
 };
 
@@ -53,18 +88,21 @@ export const randomNumber = (min: number, max: number) => {
 };
 
 export const convertTeamsGeneratedToMatches = (
-  teamGenerated: Team[],
-  tournamentId: string
+  teamGenerated: Matches[],
+  tournamentId: string,
+  round?: string
 ): Match[] => {
   const matches = [];
+  const team = teamGenerated.length;
   teamGenerated.forEach((teamDuo, index: number) => {
     matches.push({
-      id: index + 1,
+      id: nanoid(),
       tournamentId: tournamentId,
       team1: teamDuo[0].id.toString(),
       team2: teamDuo[1].id.toString(),
       score1: "0",
       score2: "0",
+      round: round,
     });
   });
   return matches;

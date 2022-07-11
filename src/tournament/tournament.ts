@@ -8,6 +8,7 @@ export interface Tournament {
   endDate?: string;
   type: string;
   status: string;
+  competitor: string;
   createdAt: Date;
 }
 export interface Match {
@@ -38,24 +39,21 @@ export interface Round {
   id: string;
   tournamentId: string;
   matches: Match[];
+  createdAt: Date;
 }
 export interface TournamentRepository extends Repository<Tournament, string> {
-  // saveMatches(
-  //   tournament: string,
-  //   round: string,
-  //   team1: string,
-  //   team2: string
-  // ): Promise<Match[]> | string;
-  // getRoundByTournament(tournament: string): Promise<Round[]>;
+  getTournamentById(id: string): Promise<Tournament[]>;
 }
 export interface MatchRepository extends Repository<Match, string> {
   buildToInsertMatches(matches: Match[], ctx?: any): Promise<number>;
 }
 
-export interface RoundRepository extends Repository<Match, string> {
+export interface RoundRepository extends Repository<Round, string> {
   getRoundByTournament(tournament: string): Promise<Round[]>;
+  saveRound(roud: Round): Promise<number>;
+  // buildToInsertRound(rounds: Round[], ctx?: any): Promise<number>;
 }
-export interface TeamRepository extends Repository<Match, string> {
+export interface TeamRepository extends Repository<Team, string> {
   getTeamByTournament(tournament: string): Promise<Team[]>;
 }
 export interface TournamentService
@@ -65,6 +63,9 @@ export interface TournamentService
   getRoundByTournament(tournament: string): Promise<Round[]>;
 
   getTeamByTournament(tournament: string): Promise<Team[]>;
+  getTournamentById(id: string): Promise<Tournament[]>;
+
+  // buildToInsertRound(rounds: Round[], ctx?: any): Promise<number>;
 }
 
 export const tournamentModel: Attributes = {
@@ -80,6 +81,7 @@ export const tournamentModel: Attributes = {
   endDate: {},
   type: {},
   status: {},
+  competitor: {},
   createdAt: { type: "datetime" },
 };
 
@@ -91,5 +93,6 @@ export interface TournamentFilter extends Filter {
   endDate?: Date;
   type: string;
   status: string;
+  competitor: string;
   createdAt: Date;
 }

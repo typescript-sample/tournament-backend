@@ -1,5 +1,6 @@
 import { Controller, handleError, Log } from "express-ext";
 import { Request, Response } from "express";
+import { nanoid } from "nanoid";
 import {
   Match,
   Tournament,
@@ -16,39 +17,89 @@ export class TournamentController extends Controller<
 > {
   constructor(log: Log, protected tournamentService: TournamentService) {
     super(log, tournamentService);
-    this.saveMatches = this.saveMatches.bind(this);
+    this.getGeneratedMatches = this.getGeneratedMatches.bind(this);
     // this. = this.getTeamByTournament.bind(this);
   }
 
-  // saveMatches(req: Request, res: Response) {
-  //   const touramentId = req.params
-  //   const round = req.params
-
-  //   generateRound()
-
-  //   this.tournamentService.saveMatches()
-  // }
-  saveMatches(req: Request, res: Response) {
+  getGeneratedMatches(req: Request, res: Response) {
     const { tournament } = req.params;
 
-    this.tournamentService
-      .getTeamByTournament(tournament)
-      .then((teams) => {
-        // generateRound(teams).forEach((element) => {
-        //   res.status(200).json(element[1].id);
-        // });
-        const teamGenerated = generateRound(teams);
-        this.tournamentService
-          .getRoundByTournament(tournament)
-          .then((round) => {
-            const roundNumber = round.length + 1;
+    const roundArray = [];
 
-            const matches = convertTeamsGeneratedToMatches(
-              teamGenerated,
-              tournament
-            );
-            const result = this.tournamentService.buildToInsertMatches(matches);
-            res.status(200).json(result);
+    this.tournamentService
+      .getTournamentById(tournament)
+      .then((tournamentResult) => {
+        // console.log(tournamentResult);
+        this.tournamentService
+          .getTeamByTournament(tournament)
+          .then((teams) => {
+            this.tournamentService
+              .getRoundByTournament(tournament)
+              .then((round) => {
+                console.log(tournamentResult);
+                console.log(tournamentResult[0].competitor);
+
+                let indexRound = teams.length;
+
+                if (indexRound % 2 === 0 && indexRound >= 0)
+                  indexRound = indexRound - 1;
+
+                let roundArray = [];
+
+                while (indexRound > 0) {
+                  const roundId = nanoid();
+
+                  const teamGenerated = generateRound(
+                    teams,
+                    tournamentResult[0].competitor
+                  );
+
+                  const matches = convertTeamsGeneratedToMatches(
+                    teamGenerated,
+                    tournament,
+                    roundId
+                  );
+                  // console.log(Date.now);
+                  roundArray = [
+                    {
+                      matches: matches,
+                      roundname: (teams.length - indexRound).toString(),
+                      tournamentid: tournament,
+                      createat: new Date(Date.now()),
+                    },
+                  ];
+                  indexRound--;
+                }
+                // console.log();
+                // }
+
+                // const matches = convertTeamsGeneratedToMatches(
+                //   teamGenerated,
+                //   tournament,
+                //   (teams.length- indexRound).toString()
+                // );
+
+                // let maxRoundNumber = teams.length;
+                // let indexRound = roundArray.length + 1;
+
+                // // while(indexRound  < maxRoundNumber){
+
+                // //   indexRound++
+                // //   round
+                // // }
+
+                // const matches = convertTeamsGeneratedToMatches(
+                //   teamGenerated,
+                //   tournament
+                // );
+                // const result =
+                //   this.tournamentService.buildToInsertMatches(matches);
+
+                res.status(200).json({ message: roundArray });
+              })
+              .catch((err) => {
+                handleError(err, res, this.log);
+              });
           })
           .catch((err) => {
             handleError(err, res, this.log);

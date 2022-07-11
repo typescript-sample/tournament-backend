@@ -21,7 +21,10 @@ export function route(app: Application, ctx: ApplicationContext): void {
   app.put("/tournaments/:id", ctx.tournament.update);
   app.patch("/tournaments/:id", ctx.tournament.patch);
   app.delete("/tournaments/:id", ctx.tournament.delete);
-  app.post("/tournaments/matches/:tournament", ctx.tournament.saveMatches);
+  app.get(
+    "/tournaments/matches/:tournament",
+    ctx.tournament.getGeneratedMatches
+  );
 
   app.post("/leagues/search", ctx.league.search);
   app.get("/leagues/search", ctx.league.search);

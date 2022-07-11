@@ -14,7 +14,7 @@ import {
 } from "./tournament";
 
 export class SqlTeamRepository
-  extends Repository<Match, string>
+  extends Repository<Team, string>
   implements TeamRepository
 {
   constructor(db: DB) {
