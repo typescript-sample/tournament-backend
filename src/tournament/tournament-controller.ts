@@ -45,22 +45,28 @@ export class TournamentController extends Controller<
                   indexRound = indexRound - 1;
 
                 let roundArray = [];
+                const roundGenerated = [];
 
                 while (indexRound > 0) {
                   const roundId = nanoid();
 
                   const teamGenerated = generateRound(
                     teams,
-                    tournamentResult[0].competitor
+                    tournamentResult[0].competitor,
+                    roundGenerated
                   );
+
+                  roundGenerated.push(...teamGenerated);
 
                   const matches = convertTeamsGeneratedToMatches(
                     teamGenerated,
                     tournament,
                     roundId
                   );
+
                   // console.log(Date.now);
                   roundArray = [
+                    ...roundArray,
                     {
                       matches: matches,
                       roundname: (teams.length - indexRound).toString(),

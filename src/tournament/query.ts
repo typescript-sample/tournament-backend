@@ -28,30 +28,59 @@ export function buildQuery(s: TournamentFilter): Statement {
 
 export const generateRound = (
   teamArray: Team[],
-  competitor: string
+  competitor: string,
+  roundGenerated: Matches[] | Team[]
 ): Matches[] => {
   // let index = teamArray.length;
-  const round = [];
+  let round = randomTeam(teamArray, competitor);
   // const ghostTeam = { id: "999", teamname: "ghost" };
 
-  if (teamArray.length % 2 === 1) round.push(null);
+  // if (teamArray.length % 2 === 1) round.push(null);
 
-  const round1 = round.concat(randomTeam(teamArray, competitor));
-  // const flagArray: number[] = [];
-  // do {
-  //   const team = randomNumber(0, teamArray.length - 1);
+  // const round1 = round.concat(randomTeam(teamArray, competitor));
 
-  //   if (flagArray.indexOf(team) === -1) {
-  //     flagArray.push(team);
-  //     round.push(teamArray[team]);
-  //     index = index - 1;
+  // const result = [];
+
+  // round1.forEach((item, index) => {
+  //   if (index % 2 === 0) {
+  //     result.push(round1.slice(index, index + 2));
   //   }
-  // } while (index > 0);
-  const result = [];
+  // });
 
-  round1.forEach((item, index) => {
+  let duplicate = false;
+
+  do {
+    if (duplicate) {
+      round = randomTeam(teamArray, competitor);
+      duplicate = false;
+    }
+
+    // console.log("round", round);
+
+    round.forEach((element, index) => {
+      if (index % 2 === 0) {
+        const indexDuplicateRound1 = roundGenerated
+          .flat()
+          .findIndex((e: any) => e.id === round[index].id);
+        const indexDuplicateRound2 = roundGenerated
+          .flat()
+          .findIndex((e: any) => e.id === round[index + 1].id);
+        if (
+          indexDuplicateRound1 === indexDuplicateRound2 - 1 &&
+          indexDuplicateRound1 % 2 === 0
+        ) {
+          duplicate = true;
+
+          console.log(duplicate);
+        }
+      }
+    });
+  } while (duplicate);
+
+  let result = [];
+  round.forEach((item, index) => {
     if (index % 2 === 0) {
-      result.push(round1.slice(index, index + 2));
+      result.push(round.slice(index, index + 2));
     }
   });
 
@@ -62,6 +91,9 @@ const randomTeam = (teamArray: Team[], competitor: string): Team[] => {
   const flagArray: number[] = [];
   const round = [];
   let index = teamArray.length;
+
+  if (teamArray.length % 2 === 1) round.push(null);
+
   do {
     const team = randomNumber(0, teamArray.length - 1);
 
@@ -71,7 +103,9 @@ const randomTeam = (teamArray: Team[], competitor: string): Team[] => {
       index = index - 1;
     }
   } while (index > 0);
+
   let result = [...round];
+  const result1 = [];
 
   if (competitor === "double") {
     result = [...round, ...round.reverse()];
