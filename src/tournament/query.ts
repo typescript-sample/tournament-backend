@@ -32,7 +32,7 @@ export const generateRound = (
   roundGenerated: Matches[] | Team[]
 ): Matches[] => {
   // let index = teamArray.length;
-  let round = randomTeam(teamArray, competitor);
+  let team: any = randomTeam(teamArray, competitor);
   // const ghostTeam = { id: "999", teamname: "ghost" };
 
   // if (teamArray.length % 2 === 1) round.push(null);
@@ -46,44 +46,51 @@ export const generateRound = (
   //     result.push(round1.slice(index, index + 2));
   //   }
   // });
+  // if(teamArray.length )
 
   let duplicate = false;
+  // console.log(roundGenerated.flat());
+  const newRound = roundGenerated.flat();
+  // console.log(newRound);
+
+  const newRound1 = newRound.map((e: any) => e.id);
+
+  console.log(newRound1);
 
   do {
     if (duplicate) {
-      round = randomTeam(teamArray, competitor);
+      team = randomTeam(teamArray, competitor);
       duplicate = false;
     }
 
-    // console.log("round", round);
-
-    round.forEach((element, index) => {
+    team.forEach((e: any, index: number) => {
       if (index % 2 === 0) {
-        const indexDuplicateRound1 = roundGenerated
-          .flat()
-          .findIndex((e: any) => e.id === round[index].id);
-        const indexDuplicateRound2 = roundGenerated
-          .flat()
-          .findIndex((e: any) => e.id === round[index + 1].id);
         if (
-          indexDuplicateRound1 === indexDuplicateRound2 - 1 &&
-          indexDuplicateRound1 % 2 === 0
+          newRound1.indexOf(team[index].id) ===
+            newRound1.indexOf(team[index + 1].id) &&
+          newRound1.indexOf(team[index].id) % 2 === 0
         ) {
           duplicate = true;
-
-          console.log(duplicate);
+          console.log(true);
         }
       }
     });
   } while (duplicate);
 
+  const result = splitTheTeam(team);
+
+  // console.log(result);
+
+  return result;
+};
+
+const splitTheTeam = (team: Team[]) => {
   let result = [];
-  round.forEach((item, index) => {
+  team.forEach((item, index) => {
     if (index % 2 === 0) {
-      result.push(round.slice(index, index + 2));
+      result.push(team.slice(index, index + 2));
     }
   });
-
   return result;
 };
 
@@ -92,7 +99,10 @@ const randomTeam = (teamArray: Team[], competitor: string): Team[] => {
   const round = [];
   let index = teamArray.length;
 
-  if (teamArray.length % 2 === 1) round.push(null);
+  if (teamArray.length % 2 === 1) {
+    const ghostTeam = { id: 999, teamname: "ghostteam" };
+    round.push(ghostTeam);
+  }
 
   do {
     const team = randomNumber(0, teamArray.length - 1);
@@ -139,5 +149,14 @@ export const convertTeamsGeneratedToMatches = (
       round: round,
     });
   });
+  return matches;
+};
+
+export const checkGhostMatchAndRemove = (matches: Team[]) => {
+  matches.pop();
+  matches.shift();
+  // console.log("aa", indexGhostTeam);
+
+  console.log("matches", matches);
   return matches;
 };

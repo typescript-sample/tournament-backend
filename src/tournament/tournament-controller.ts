@@ -8,7 +8,11 @@ import {
   TournamentService,
 } from "./tournament";
 import { buildToInsertBatch } from "query-core";
-import { convertTeamsGeneratedToMatches, generateRound } from "./query";
+import {
+  checkGhostMatchAndRemove,
+  convertTeamsGeneratedToMatches,
+  generateRound,
+} from "./query";
 
 export class TournamentController extends Controller<
   Tournament,
@@ -36,13 +40,15 @@ export class TournamentController extends Controller<
             this.tournamentService
               .getRoundByTournament(tournament)
               .then((round) => {
-                console.log(tournamentResult);
-                console.log(tournamentResult[0].competitor);
+                // console.log(tournamentResult);
+                // console.log(tournamentResult[0].competitor);
 
                 let indexRound = teams.length;
 
                 if (indexRound % 2 === 0 && indexRound >= 0)
                   indexRound = indexRound - 1;
+
+                console.log("indexRound", indexRound);
 
                 let roundArray = [];
                 const roundGenerated = [];
@@ -57,51 +63,32 @@ export class TournamentController extends Controller<
                   );
 
                   roundGenerated.push(...teamGenerated);
+                  // console.log(roundGenerated);
 
-                  const matches = convertTeamsGeneratedToMatches(
-                    teamGenerated,
-                    tournament,
-                    roundId
-                  );
+                  // checkGhostMatchAndRemove(roundGenerated);
 
-                  // console.log(Date.now);
-                  roundArray = [
-                    ...roundArray,
-                    {
-                      matches: matches,
-                      roundname: (teams.length - indexRound).toString(),
-                      tournamentid: tournament,
-                      createat: new Date(Date.now()),
-                    },
-                  ];
+                  // const matches = convertTeamsGeneratedToMatches(
+                  //   teamGenerated,
+                  //   tournament,
+                  //   roundId
+                  // );
+
+                  // // console.log(Date.now);
+
+                  // roundArray = [
+                  //   ...roundArray,
+                  //   {
+                  //     matches: matches,
+                  //     roundname: (teams.length - indexRound).toString(),
+                  //     tournamentid: tournament,
+                  //     createat: new Date(Date.now()),
+                  //   },
+                  // ];
                   indexRound--;
                 }
-                // console.log();
-                // }
 
-                // const matches = convertTeamsGeneratedToMatches(
-                //   teamGenerated,
-                //   tournament,
-                //   (teams.length- indexRound).toString()
-                // );
-
-                // let maxRoundNumber = teams.length;
-                // let indexRound = roundArray.length + 1;
-
-                // // while(indexRound  < maxRoundNumber){
-
-                // //   indexRound++
-                // //   round
-                // // }
-
-                // const matches = convertTeamsGeneratedToMatches(
-                //   teamGenerated,
-                //   tournament
-                // );
-                // const result =
-                //   this.tournamentService.buildToInsertMatches(matches);
-
-                res.status(200).json({ message: roundArray });
+                // checkGhostMatchAndRemove(roundGenerated);
+                res.status(200).json({ message: roundGenerated });
               })
               .catch((err) => {
                 handleError(err, res, this.log);
