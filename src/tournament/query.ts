@@ -2,6 +2,7 @@ import { Statement } from "query-core";
 import { Match, TournamentFilter } from "./tournament";
 import { Team } from "./tournament";
 import { nanoid } from "nanoid";
+import e from "express";
 
 interface Matches {
   team: Team[];
@@ -29,10 +30,20 @@ export function buildQuery(s: TournamentFilter): Statement {
 export const generateRound = (
   teamArray: Team[],
   competitor: string,
-  roundGenerated: Matches[] | Team[]
-): Matches[] => {
+  roundGenerated: Team[]
+): Matches[] | Team[] => {
   // let index = teamArray.length;
-  let team: any = randomTeam(teamArray, competitor);
+  let team = [];
+  let duplicate = false;
+  do {
+    team = [...randomTeam(teamArray, competitor)];
+
+    // console.log("team", team);
+    // console.log("roundGenerated", roundGenerated);
+    duplicate = checkDuplicateMatch1(team, roundGenerated);
+    // console.log(duplicate);
+  } while (duplicate);
+
   // const ghostTeam = { id: "999", teamname: "ghost" };
 
   // if (teamArray.length % 2 === 1) round.push(null);
@@ -48,34 +59,14 @@ export const generateRound = (
   // });
   // if(teamArray.length )
 
-  let duplicate = false;
-  // console.log(roundGenerated.flat());
-  const newRound = roundGenerated.flat();
-  // console.log(newRound);
+  // let duplicate = false;
+  // // console.log(roundGenerated.flat());
+  // const newRound = roundGenerated.flat();
+  // // console.log(newRound);
 
-  const newRound1 = newRound.map((e: any) => e.id);
+  // const newRound1 = newRound.map((e: any) => e.id);
 
-  console.log(newRound1);
-
-  do {
-    if (duplicate) {
-      team = randomTeam(teamArray, competitor);
-      duplicate = false;
-    }
-
-    team.forEach((e: any, index: number) => {
-      if (index % 2 === 0) {
-        if (
-          newRound1.indexOf(team[index].id) ===
-            newRound1.indexOf(team[index + 1].id) &&
-          newRound1.indexOf(team[index].id) % 2 === 0
-        ) {
-          duplicate = true;
-          console.log(true);
-        }
-      }
-    });
-  } while (duplicate);
+  // console.log(newRound1);
 
   const result = splitTheTeam(team);
 
@@ -92,6 +83,66 @@ const splitTheTeam = (team: Team[]) => {
     }
   });
   return result;
+};
+
+export const checkDuplicateMatch = (
+  team: Team[] | any,
+  roundGenerated: Team[]
+): boolean => {
+  const round1 = roundGenerated;
+  const round2 = round1.map((e: any) => e.id);
+  // console.log(round2);
+
+  let duplicate = false;
+
+  let indexRound = 0;
+  while (indexRound < round1.length) {
+    let index = 0;
+
+    while (index < team.length) {
+      if (
+        round1[indexRound][0].id === team[index].id &&
+        round1[indexRound][1].id === team[index + 1].id
+      ) {
+        duplicate = true;
+        break;
+      }
+      index = index + 2;
+    }
+    if (duplicate) {
+      break;
+    }
+    console.log("indexRound", indexRound);
+    indexRound++;
+  }
+
+  return duplicate;
+};
+
+export const checkDuplicateMatch1 = (
+  team: Team[] | any,
+  roundGenerated: Team[]
+): boolean => {
+  const round1: any = roundGenerated;
+  const team1 = splitTheTeam(team);
+  // console.log(round2);
+  let duplicate = false;
+  for (let i = 0; i < round1.length; i++) {
+    const round2 = round1[i].map((e: any) => e.id);
+    for (let i = 0; i < team1.length / 2; i++) {
+      const team2 = team1[i].map((e: any) => e.id);
+      if (JSON.stringify(round2) === JSON.stringify(team2)) {
+        // console.log(JSON.stringify(round2), JSON.stringify(team2));
+        duplicate = true;
+        break;
+      }
+    }
+    if (duplicate) {
+      break;
+    }
+  }
+
+  return duplicate;
 };
 
 const randomTeam = (teamArray: Team[], competitor: string): Team[] => {

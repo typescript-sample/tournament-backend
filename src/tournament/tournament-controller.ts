@@ -9,6 +9,7 @@ import {
 } from "./tournament";
 import { buildToInsertBatch } from "query-core";
 import {
+  checkDuplicateMatch,
   checkGhostMatchAndRemove,
   convertTeamsGeneratedToMatches,
   generateRound,
@@ -51,7 +52,7 @@ export class TournamentController extends Controller<
                 console.log("indexRound", indexRound);
 
                 let roundArray = [];
-                const roundGenerated = [];
+                let roundGenerated = [];
 
                 while (indexRound > 0) {
                   const roundId = nanoid();
@@ -62,7 +63,7 @@ export class TournamentController extends Controller<
                     roundGenerated
                   );
 
-                  roundGenerated.push(...teamGenerated);
+                  roundGenerated = [...roundGenerated, ...teamGenerated];
                   // console.log(roundGenerated);
 
                   // checkGhostMatchAndRemove(roundGenerated);
@@ -85,10 +86,16 @@ export class TournamentController extends Controller<
                   //   },
                   // ];
                   indexRound--;
+                  console.log("indexRound", indexRound);
                 }
 
                 // checkGhostMatchAndRemove(roundGenerated);
-                res.status(200).json({ message: roundGenerated });
+                res.status(200).json({
+                  message: {
+                    data: roundGenerated,
+                    length: roundGenerated.length,
+                  },
+                });
               })
               .catch((err) => {
                 handleError(err, res, this.log);
