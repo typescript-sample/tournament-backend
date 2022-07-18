@@ -1,5 +1,6 @@
 import { handleError } from "express-ext";
 import { DB, Repository, select } from "query-core";
+import { getTournamentById } from "./query";
 import {
   Match,
   Round,
@@ -17,9 +18,16 @@ export class SqlTournamentRepository
     super(db, "tournaments", tournamentModel);
   }
   getTournamentById(id: string): Promise<Tournament[]> {
-    return this.query<Tournament>(
-      `select * from tournaments where id = ${this.param(1)}`,
-      [id]
-    );
+    return this.query<Tournament>(getTournamentById, [id]);
+  }
+
+  updateRoundTournament(
+    tournament: Tournament,
+    newRound: Round[],
+    ctx?: any
+  ): Promise<number> {
+    const result = this.update({ ...tournament, rounds: newRound }, ctx);
+
+    return result;
   }
 }

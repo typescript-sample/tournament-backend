@@ -3,25 +3,35 @@ import { Match } from "../match/match";
 
 export interface Round {
   id: string;
+  roundname: string;
   tournamentId: string;
   matches: Match[];
   createdAt: Date;
 }
 
+export interface Round {
+  id: string;
+  roundname: string;
+  tournamentId: string;
+  matches: Match[];
+  createdAt: Date;
+}
 export const roundModel: Attributes = {
   id: {
     key: true,
     match: "equal",
   },
+  roundname: {},
   tournamentId: {
     required: true,
   },
   matches: {},
-  createdAt: { type: "datetime" },
+  createdAt: {},
 };
 
 export interface RoundFilter extends Filter {
   id: string;
+  roundname: string;
   tournamentId: string;
   matches: Match[];
   createdAt: Date;

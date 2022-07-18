@@ -1,11 +1,12 @@
 import { Attributes, DateRange, Filter, Repository, Service } from "onecore";
+import { Team } from "../team/team";
 
 export interface Match {
   id: string;
   tournamentId: string;
   round: string;
-  team1: string;
-  team2: string;
+  team1: Team;
+  team2: Team;
   score1: string;
   score2: string;
   createdAt: Date;
@@ -47,8 +48,8 @@ export interface MatchFilter extends Filter {
   id: string;
   tournamentId: string;
   round: string;
-  team1: string;
-  team2: string;
+  team1: Team;
+  team2: Team;
   score1: string;
   score2: string;
   createdAt: Date;

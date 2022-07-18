@@ -1,5 +1,5 @@
 import { Controller, handleError, Log } from "express-ext";
-import { Request, Response } from "express";
+import e, { Request, Response } from "express";
 import { nanoid } from "nanoid";
 import {
   Match,
@@ -10,9 +10,10 @@ import {
 import { buildToInsertBatch } from "query-core";
 import {
   checkDuplicateMatch,
-  checkGhostMatchAndRemove,
+  checkGhostTeamAndRemove,
   convertTeamsGeneratedToMatches,
   generateRound,
+  randomTeam,
 } from "./query";
 
 export class TournamentController extends Controller<
@@ -38,68 +39,85 @@ export class TournamentController extends Controller<
         this.tournamentService
           .getTeamByTournament(tournament)
           .then((teams) => {
-            this.tournamentService
-              .getRoundByTournament(tournament)
-              .then((round) => {
-                // console.log(tournamentResult);
-                // console.log(tournamentResult[0].competitor);
+            // console.log(tournamentResult);
+            // console.log(tournamentResult[0].competitor);
 
-                let indexRound = teams.length;
+            if (tournamentResult[0].rounds === null) {
+              let indexRound = teams.length;
 
-                if (indexRound % 2 === 0 && indexRound >= 0)
-                  indexRound = indexRound - 1;
+              if (indexRound % 2 === 0 && indexRound >= 0)
+                indexRound = indexRound - 1;
 
-                console.log("indexRound", indexRound);
+              console.log("indexRound", indexRound);
 
-                let roundArray = [];
-                let roundGenerated = [];
+              let roundArray = [];
+              let matchesArray = [];
 
-                while (indexRound > 0) {
-                  const roundId = nanoid();
+              const team = randomTeam(teams, tournamentResult[0].competitor);
 
-                  const teamGenerated = generateRound(
-                    teams,
-                    tournamentResult[0].competitor,
-                    roundGenerated
-                  );
+              while (indexRound > 0) {
+                const roundId = nanoid();
+                const teamGenerated = generateRound(
+                  team,
+                  tournamentResult[0].competitor
+                );
 
-                  roundGenerated = [...roundGenerated, ...teamGenerated];
-                  // console.log(roundGenerated);
+                team.push(team[1]);
+                team.splice(1, 1);
 
-                  // checkGhostMatchAndRemove(roundGenerated);
-
-                  // const matches = convertTeamsGeneratedToMatches(
-                  //   teamGenerated,
-                  //   tournament,
-                  //   roundId
-                  // );
-
-                  // // console.log(Date.now);
-
-                  // roundArray = [
-                  //   ...roundArray,
-                  //   {
-                  //     matches: matches,
-                  //     roundname: (teams.length - indexRound).toString(),
-                  //     tournamentid: tournament,
-                  //     createat: new Date(Date.now()),
-                  //   },
-                  // ];
-                  indexRound--;
-                  console.log("indexRound", indexRound);
-                }
+                // roundGenerated = [...roundGenerated, ...teamGenerated];
+                // console.log(roundGenerated);
 
                 // checkGhostMatchAndRemove(roundGenerated);
-                res.status(200).json({
-                  message: {
-                    data: roundGenerated,
-                    length: roundGenerated.length,
+
+                const matches = convertTeamsGeneratedToMatches(
+                  teamGenerated,
+                  tournament,
+                  roundId
+                );
+
+                // // console.log(Date.now);
+                const newMatches = checkGhostTeamAndRemove(matches);
+                // console.log(newMatches);
+                matchesArray.push(...newMatches);
+
+                roundArray = [
+                  ...roundArray,
+                  {
+                    id: roundId,
+                    matches: newMatches,
+                    roundname: (teams.length - indexRound).toString(),
+                    tournamentId: tournament,
+                    createdAt: new Date(Date.now()),
                   },
+                ];
+
+                indexRound--;
+                console.log("indexRound", indexRound);
+              }
+
+              this.tournamentService.buildToInsertMatches(matchesArray);
+
+              const result = this.tournamentService
+                .buildToInsertRound(roundArray)
+                .then()
+                .catch((err) => {
+                  handleError(err, res);
                 });
-              })
-              .catch((err) => {
-                handleError(err, res, this.log);
+
+              this.tournamentService.updateRoundTournament(
+                tournamentResult[0],
+                roundArray
+              );
+
+              res.status(200).json({
+                message: matchesArray,
               });
+            } else {
+              res.status(400).json({
+                message: "Rounds already exist",
+              });
+            }
           })
           .catch((err) => {
             handleError(err, res, this.log);
