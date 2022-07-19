@@ -62,6 +62,9 @@ export class TournamentManager
       ctx
     );
   }
+  getAllTournament(): Promise<Tournament[]> {
+    return this.tournamentRepository.getAllTournament();
+  }
 }
 export function useTournamentService(
   db: DB,

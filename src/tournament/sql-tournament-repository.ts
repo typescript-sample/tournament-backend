@@ -30,4 +30,8 @@ export class SqlTournamentRepository
 
     return result;
   }
+
+  getAllTournament(): Promise<Tournament[]> {
+    return this.all();
+  }
 }

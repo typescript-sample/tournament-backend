@@ -1,6 +1,6 @@
 import { Log, Manager, Search } from "onecore";
 import { DB, postgres, SearchBuilder } from "query-core";
-import { buildQuery } from "./query";
+// import { buildQuery } from "./query";
 import {
   Match,
   MatchFilter,
@@ -32,8 +32,7 @@ export function useMatchService(db: DB): MatchService {
     db.query,
     "matches",
     matchModel,
-    postgres,
-    buildQuery
+    postgres
   );
   const repository = new SqlMatchRepository(db);
   return new MatchManager(builder.search, repository);

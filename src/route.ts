@@ -14,6 +14,7 @@ export function route(app: Application, ctx: ApplicationContext): void {
   app.patch("/users/:id", ctx.user.patch);
   app.delete("/users/:id", ctx.user.delete);
 
+  app.get("/tournaments/getall", ctx.tournament.getAllTournament);
   app.post("/tournaments/search", ctx.tournament.search);
   app.get("/tournaments/search", ctx.tournament.search);
   app.get("/tournaments/:id", ctx.tournament.load);

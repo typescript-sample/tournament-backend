@@ -50,6 +50,7 @@ export interface TournamentRepository extends Repository<Tournament, string> {
     newRound: Round[],
     ctx?: any
   ): Promise<number>;
+  getAllTournament(): Promise<Tournament[]>;
 }
 export interface MatchRepository extends Repository<Match, string> {
   buildToInsertMatches(matches: Match[], ctx?: any): Promise<number>;
@@ -78,6 +79,8 @@ export interface TournamentService
     newRound: Round[],
     ctx?: any
   ): Promise<number>;
+
+  getAllTournament(): Promise<Tournament[]>;
 }
 
 export const tournamentModel: Attributes = {

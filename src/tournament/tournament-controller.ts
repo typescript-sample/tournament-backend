@@ -13,7 +13,9 @@ import {
   checkGhostTeamAndRemove,
   convertTeamsGeneratedToMatches,
   generateRound,
+  isCompetitor,
   randomTeam,
+  splitTheTeam,
 } from "./query";
 
 export class TournamentController extends Controller<
@@ -24,6 +26,7 @@ export class TournamentController extends Controller<
   constructor(log: Log, protected tournamentService: TournamentService) {
     super(log, tournamentService);
     this.getGeneratedMatches = this.getGeneratedMatches.bind(this);
+    this.getAllTournament = this.getAllTournament.bind(this);
     // this. = this.getTeamByTournament.bind(this);
   }
 
@@ -48,36 +51,29 @@ export class TournamentController extends Controller<
               if (indexRound % 2 === 0 && indexRound >= 0)
                 indexRound = indexRound - 1;
 
-              console.log("indexRound", indexRound);
-
               let roundArray = [];
               let matchesArray = [];
-
+              let saveTeam = [];
               const team = randomTeam(teams, tournamentResult[0].competitor);
 
               while (indexRound > 0) {
                 const roundId = nanoid();
-                const teamGenerated = generateRound(
-                  team,
-                  tournamentResult[0].competitor
-                );
+                const teamGenerated = generateRound(team);
 
                 team.push(team[1]);
                 team.splice(1, 1);
 
-                // roundGenerated = [...roundGenerated, ...teamGenerated];
-                // console.log(roundGenerated);
+                saveTeam = [...saveTeam, teamGenerated];
 
-                // checkGhostMatchAndRemove(roundGenerated);
-
+                const newTeamGenerated = splitTheTeam(teamGenerated);
                 const matches = convertTeamsGeneratedToMatches(
-                  teamGenerated,
+                  newTeamGenerated,
                   tournament,
                   roundId
                 );
-
                 // // console.log(Date.now);
                 const newMatches = checkGhostTeamAndRemove(matches);
+
                 // console.log(newMatches);
                 matchesArray.push(...newMatches);
 
@@ -86,42 +82,96 @@ export class TournamentController extends Controller<
                   {
                     id: roundId,
                     matches: newMatches,
-                    roundname: (teams.length - indexRound).toString(),
+                    roundname: (teams.length - indexRound + 1).toString(),
                     tournamentId: tournament,
                     createdAt: new Date(Date.now()),
                   },
                 ];
 
                 indexRound--;
-                console.log("indexRound", indexRound);
               }
 
-              this.tournamentService.buildToInsertMatches(matchesArray);
+              if (tournamentResult[0].competitor === "double") {
+                let indexReverse = teams.length;
+                if (indexReverse % 2 === 0 && indexReverse >= 0)
+                  indexReverse = indexReverse - 1;
 
-              const result = this.tournamentService
-                .buildToInsertRound(roundArray)
-                .then()
-                .catch((err) => {
-                  handleError(err, res);
-                });
+                while (indexReverse > 0) {
+                  saveTeam.forEach((element) => {
+                    const roundId = nanoid();
+                    const teamReversed = element.reverse();
 
-              this.tournamentService.updateRoundTournament(
-                tournamentResult[0],
-                roundArray
-              );
+                    const newTeamGenerated = splitTheTeam(teamReversed);
 
+                    const matches = convertTeamsGeneratedToMatches(
+                      newTeamGenerated,
+                      tournament,
+                      roundId
+                    );
+                    // // console.log(Date.now);
+                    const newMatches = checkGhostTeamAndRemove(matches);
+
+                    // console.log(newMatches);
+                    matchesArray.push(...newMatches);
+
+                    roundArray = [
+                      ...roundArray,
+                      {
+                        id: roundId,
+                        matches: newMatches,
+                        roundname: (
+                          teams.length * 2 -
+                          indexReverse +
+                          1
+                        ).toString(),
+                        tournamentId: tournament,
+                        createdAt: new Date(Date.now()),
+                      },
+                    ];
+
+                    indexReverse--;
+                  });
+                }
+
+                this.tournamentService.buildToInsertMatches(matchesArray);
+
+                this.tournamentService
+                  .buildToInsertRound(roundArray)
+                  .then()
+                  .catch((err) => {
+                    handleError(err, res, this.log);
+                  });
+
+                this.tournamentService.updateRoundTournament(
+                  tournamentResult[0],
+                  roundArray
+                );
+              }
               res.status(200).json({
-                message: matchesArray,
+                message: "generate succedded",
+                // message: roundArray,
               });
             } else {
               res.status(400).json({
                 message: "Rounds already exist",
+                // message: roundArray,
               });
             }
           })
           .catch((err) => {
             handleError(err, res, this.log);
           });
+      })
+      .catch((err) => {
+        handleError(err, res, this.log);
+      });
+  }
+
+  getAllTournament(req: Request, res: Response) {
+    this.tournamentService
+      .getAllTournament()
+      .then((result) => {
+        res.status(200).json(result);
       })
       .catch((err) => {
         handleError(err, res, this.log);

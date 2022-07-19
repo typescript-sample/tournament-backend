@@ -1,3 +1,4 @@
+import { nanoid } from "nanoid";
 import { Attributes, Filter } from "onecore";
 import { Match } from "../match/match";
 
@@ -20,6 +21,7 @@ export const roundModel: Attributes = {
   id: {
     key: true,
     match: "equal",
+    // default: nanoid()
   },
   roundname: {},
   tournamentId: {

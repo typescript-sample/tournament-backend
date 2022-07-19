@@ -4,13 +4,14 @@ import { Team } from "./tournament";
 import { nanoid } from "nanoid";
 import e from "express";
 
-interface Matches {
-  team: Team[];
-}
-[];
+// interface Matches {
+//   team: Team[];
+// }
+// [];
+
+export const getTournamentById = `select * from tournaments where id = $1`;
 
 export const getAllTeams = `select * from teams where tournamentId = $1`;
-export const getTournamentById = `select * from tournaments where id = $1`;
 export const getRoundByTournamentId = `select * from rounds where tournamentId = $1`;
 
 export function buildQuery(s: TournamentFilter): Statement {
@@ -31,10 +32,7 @@ export function buildQuery(s: TournamentFilter): Statement {
   return { query, params };
 }
 
-export const generateRound = (
-  team: Team[],
-  competitor: string
-): Matches[] | Team[] => {
+export const generateRound = (team: Team[]): Team[] => {
   // let index = teamArray.length;
   let duplicate = false;
   // do {
@@ -55,15 +53,21 @@ export const generateRound = (
   }
 
   // console.log(result);
-  let result1 = [];
-  if (competitor === "double") result1 = [...result, ...result.reverse()];
-  // console.log(round);
-  const result2 = splitTheTeam(result1);
 
-  return result2;
+  return result;
 };
 
-const splitTheTeam = (team: Team[]) => {
+export const isCompetitor = (competitor: string, team: Team[]) => {
+  let result = [];
+  if (competitor === "double") result = [...team, ...team.reverse()];
+
+  // console.log(round);
+  const newResult = splitTheTeam(result);
+
+  return newResult;
+};
+
+export const splitTheTeam = (team: Team[]) => {
   let result = [];
   team.forEach((item, index) => {
     if (index % 2 === 0) {
@@ -145,7 +149,7 @@ export const randomNumber = (min: number, max: number) => {
 };
 
 export const convertTeamsGeneratedToMatches = (
-  teamGenerated: Matches[] | Team[],
+  teamGenerated: Team[],
   tournamentId: string,
   round?: string
 ): Match[] => {
