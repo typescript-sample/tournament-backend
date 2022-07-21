@@ -18,6 +18,7 @@ import { PlayerController, usePlayerController } from "./player";
 import { MatchController, useMatchController } from "./match";
 import { TeamController } from "./team/team-controller";
 import { useTeamController } from "./team";
+import { StandingsController, useStandingsController } from "./standing";
 resources.createValidator = createValidator;
 
 export interface ApplicationContext {
@@ -30,6 +31,7 @@ export interface ApplicationContext {
   team: TeamController;
   player: PlayerController;
   match: MatchController;
+  standings: StandingsController;
 }
 export function useContext(
   db: DB,
@@ -47,7 +49,9 @@ export function useContext(
   const league = useLeagueController(logger.error, db, mapper);
   const team = useTeamController(logger.error, db, mapper);
   const player = usePlayerController(logger.error, db);
+  const standings = useStandingsController(logger.error, db);
   const match = useMatchController(logger.error, db);
+
   return {
     health,
     log,
@@ -58,5 +62,6 @@ export function useContext(
     player,
     team,
     match,
+    standings,
   };
 }

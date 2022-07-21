@@ -16,10 +16,11 @@ export interface Match {
   id: string;
   tournamentId: string;
   round: string;
-  team1: Team;
-  team2: Team;
-  score1: string;
-  score2: string;
+  home: Team;
+  away: Team;
+  homeResult: string;
+  awayResult: string;
+  matchDay: string;
   createdAt: Date;
 }
 
@@ -27,12 +28,12 @@ export interface Team {
   id: string;
   teamname: string;
   teamlogo: string;
-  stadiumname: string;
-  stadiumpic: string;
-  description: string;
-  status: string;
-  tournamentId: string;
-  eliminated: boolean;
+  stadiumname?: string;
+  stadiumpic?: string;
+  description?: string;
+  status?: string;
+  tournamentId?: string;
+  eliminated?: boolean;
   createdAt: Date;
 }
 
@@ -43,6 +44,38 @@ export interface Round {
   matches: Match[];
   createdAt: Date;
 }
+
+export interface Standings {
+  id: string;
+  tournamentId: string;
+  statistics: Statistics[];
+  createdAt: Date;
+}
+
+interface Statistics {
+  team: Team;
+  played: string;
+  won: string;
+  drawn: string;
+  lost: string;
+  goalsFor: string;
+  goalsAgainst: string;
+  goalsDifference: string;
+  points: string;
+  form: Match[];
+}
+// interface Team {
+//   name: string;
+//   logo: string;
+// }
+
+// interface Match {
+//   home: Team;
+//   away: Team;
+//   homResult: string;
+//   awayresult: string;
+//   matchDay: string;
+// }
 export interface TournamentRepository extends Repository<Tournament, string> {
   getTournamentById(id: string): Promise<Tournament[]>;
   updateRoundTournament(
@@ -51,6 +84,7 @@ export interface TournamentRepository extends Repository<Tournament, string> {
     ctx?: any
   ): Promise<number>;
   getAllTournament(): Promise<Tournament[]>;
+  createTournament(tournament: Tournament, ctx?: any): Promise<number>;
 }
 export interface MatchRepository extends Repository<Match, string> {
   buildToInsertMatches(matches: Match[], ctx?: any): Promise<number>;
@@ -63,6 +97,9 @@ export interface RoundRepository extends Repository<Round, string> {
 }
 export interface TeamRepository extends Repository<Team, string> {
   getTeamByTournament(tournament: string): Promise<Team[]>;
+}
+export interface StandingsRepository extends Repository<Standings, string> {
+  createStandings(standings: Standings, ctx?: any): Promise<number>;
 }
 export interface TournamentService
   extends Service<Tournament, string, TournamentFilter> {
@@ -81,6 +118,9 @@ export interface TournamentService
   ): Promise<number>;
 
   getAllTournament(): Promise<Tournament[]>;
+  createTournament(tournament: Tournament, ctx?: any): Promise<number>;
+
+  createStandings(standings: Standings, ctx?: any): Promise<number>;
 }
 
 export const tournamentModel: Attributes = {
@@ -92,7 +132,9 @@ export const tournamentModel: Attributes = {
     required: true,
   },
   description: {},
-  startDate: {},
+  startDate: {
+    field: "startdate",
+  },
   endDate: {},
   type: {},
   status: {},

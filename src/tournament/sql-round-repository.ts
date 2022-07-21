@@ -4,15 +4,8 @@ import { param } from "pg-extension";
 import { buildToInsertBatch, DB, Repository } from "query-core";
 import { roundModel } from "../round/round";
 import { getRoundByTournamentId } from "./query";
-import { RoundRepository } from "./tournament";
-import {
-  Match,
-  Round,
-  Team,
-  Tournament,
-  tournamentModel,
-  TournamentRepository,
-} from "./tournament";
+// import { RoundRepository } from "./tournament";
+import { Match, Round, RoundRepository } from "./tournament";
 
 export class SqlRoundRepository
   extends Repository<Round, string>

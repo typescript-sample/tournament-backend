@@ -1,8 +1,11 @@
-import { DB, Repository } from 'query-core';
-import { Players, PlayerModel, PlayerRepository } from './player';
+import { DB, Repository } from "query-core";
+import { Player, PlayerModel, PlayerRepository } from "./player";
 
-export class SqlPlayerRepository extends Repository<Players, string> implements PlayerRepository {
+export class SqlPlayerRepository
+  extends Repository<Player, string>
+  implements PlayerRepository
+{
   constructor(db: DB) {
-    super(db, 'players', PlayerModel);
+    super(db, "players", PlayerModel);
   }
 }

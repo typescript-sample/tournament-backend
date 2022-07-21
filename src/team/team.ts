@@ -8,6 +8,7 @@ export interface Team {
   stadiumpic: string;
   description: string;
   status: string;
+  color: string;
   tournamentId: string;
   eliminated: boolean;
   createdAt: Date;
@@ -34,6 +35,7 @@ export const teamModel: Attributes = {
   stadiumpic: {},
   description: {},
   status: {},
+  color: {},
   tournamentId: {},
   eliminated: {
     default: false,
@@ -49,6 +51,7 @@ export interface TeamFilter extends Filter {
   stadiumpic: string;
   description: string;
   status: string;
+  color: string;
   tournamentId: string;
   eliminated: boolean;
   createdAt: Date;

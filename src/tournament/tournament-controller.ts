@@ -27,6 +27,7 @@ export class TournamentController extends Controller<
     super(log, tournamentService);
     this.getGeneratedMatches = this.getGeneratedMatches.bind(this);
     this.getAllTournament = this.getAllTournament.bind(this);
+    this.createTournament = this.createTournament.bind(this);
     // this. = this.getTeamByTournament.bind(this);
   }
 
@@ -47,9 +48,12 @@ export class TournamentController extends Controller<
 
             if (tournamentResult[0].rounds === null) {
               let indexRound = teams.length;
+              let teamLength = teams.length;
 
-              if (indexRound % 2 === 0 && indexRound >= 0)
+              if (indexRound % 2 === 0 && indexRound >= 0) {
                 indexRound = indexRound - 1;
+                teamLength = teamLength - 1;
+              }
 
               let roundArray = [];
               let matchesArray = [];
@@ -69,7 +73,8 @@ export class TournamentController extends Controller<
                 const matches = convertTeamsGeneratedToMatches(
                   newTeamGenerated,
                   tournament,
-                  roundId
+                  roundId,
+                  teamLength - indexRound
                 );
                 // // console.log(Date.now);
                 const newMatches = checkGhostTeamAndRemove(matches);
@@ -82,7 +87,7 @@ export class TournamentController extends Controller<
                   {
                     id: roundId,
                     matches: newMatches,
-                    roundname: (teams.length - indexRound + 1).toString(),
+                    roundname: (teamLength - indexRound + 1).toString(),
                     tournamentId: tournament,
                     createdAt: new Date(Date.now()),
                   },
@@ -93,8 +98,11 @@ export class TournamentController extends Controller<
 
               if (tournamentResult[0].competitor === "double") {
                 let indexReverse = teams.length;
-                if (indexReverse % 2 === 0 && indexReverse >= 0)
+                let teamLength = teams.length;
+                if (indexReverse % 2 === 0 && indexReverse >= 0) {
                   indexReverse = indexReverse - 1;
+                  teamLength = teamLength - 1;
+                }
 
                 while (indexReverse > 0) {
                   saveTeam.forEach((element) => {
@@ -106,7 +114,8 @@ export class TournamentController extends Controller<
                     const matches = convertTeamsGeneratedToMatches(
                       newTeamGenerated,
                       tournament,
-                      roundId
+                      roundId,
+                      teamLength * 2 - indexReverse
                     );
                     // // console.log(Date.now);
                     const newMatches = checkGhostTeamAndRemove(matches);
@@ -120,7 +129,7 @@ export class TournamentController extends Controller<
                         id: roundId,
                         matches: newMatches,
                         roundname: (
-                          teams.length * 2 -
+                          teamLength * 2 -
                           indexReverse +
                           1
                         ).toString(),
@@ -133,22 +142,43 @@ export class TournamentController extends Controller<
                   });
                 }
 
-                this.tournamentService.buildToInsertMatches(matchesArray);
-
                 this.tournamentService
-                  .buildToInsertRound(roundArray)
-                  .then()
+                  .buildToInsertMatches(matchesArray)
+                  .then((r) => {
+                    if (r === 0) {
+                      res.status(400).json({ message: "Save match failed" });
+                    }
+                  })
                   .catch((err) => {
                     handleError(err, res, this.log);
                   });
 
-                this.tournamentService.updateRoundTournament(
-                  tournamentResult[0],
-                  roundArray
-                );
+                this.tournamentService
+                  .buildToInsertRound(roundArray)
+                  .then((r) => {
+                    if (r === 0) {
+                      res.status(400).json({ message: "Save round failed" });
+                    }
+                  })
+                  .catch((err) => {
+                    handleError(err, res, this.log);
+                  });
+
+                this.tournamentService
+                  .updateRoundTournament(tournamentResult[0], roundArray)
+                  .then((r) => {
+                    if (r === 0) {
+                      res
+                        .status(400)
+                        .json({ message: "Update Tournament failed" });
+                    }
+                  })
+                  .catch((err) => {
+                    handleError(err, res, this.log);
+                  });
               }
               res.status(200).json({
-                message: "generate succedded",
+                message: "Generate succedded",
                 // message: roundArray,
               });
             } else {
@@ -176,6 +206,22 @@ export class TournamentController extends Controller<
       .catch((err) => {
         handleError(err, res, this.log);
       });
+  }
+
+  createTournament(req: Request, res: Response) {
+    // const tournament = req.body;
+    // this.tournamentService
+    //   .createTournament(tournament)
+    //   .then((result) => {
+    //     if (result !== 0) res.status(201).json({ message: "Create success" });
+    //     else {
+    //       res.status(400).json({ err: "False to create tournament" });
+    //     }
+    //   })
+    //   .catch((err) => handleError(err, res, this.log));
+    // if (tournament.id !== null) {
+    //   this.tournamentService.createStandings(tournament);
+    // }
   }
 
   // getTeamByTournament(req: Request, res: Response) {

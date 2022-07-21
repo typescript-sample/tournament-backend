@@ -65,6 +65,9 @@ export class TournamentManager
   getAllTournament(): Promise<Tournament[]> {
     return this.tournamentRepository.getAllTournament();
   }
+  createTournament(tournament: Tournament, ctx?: any): Promise<number> {
+    return this.tournamentRepository.createTournament(tournament, ctx);
+  }
 }
 export function useTournamentService(
   db: DB,

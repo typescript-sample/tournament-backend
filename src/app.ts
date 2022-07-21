@@ -1,4 +1,3 @@
-import { generateRound } from "./common/generate";
 import { merge } from "config-plus";
 import dotenv from "dotenv";
 import express, { json } from "express";

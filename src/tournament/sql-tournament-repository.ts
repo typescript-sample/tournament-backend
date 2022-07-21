@@ -34,4 +34,8 @@ export class SqlTournamentRepository
   getAllTournament(): Promise<Tournament[]> {
     return this.all();
   }
+
+  createTournament(tournament: Tournament, ctx?: any): Promise<number> {
+    return this.insert(tournament, ctx);
+  }
 }

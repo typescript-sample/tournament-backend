@@ -133,12 +133,6 @@ export const randomTeam = (teamArray: Team[], competitor: string): Team[] => {
 
   let result = [...round];
   const result1 = [];
-
-  // if (competitor === "double") {
-  //   result = [...round, ...round.reverse()];
-  //   // console.log(round);
-  // }
-
   return result;
 };
 
@@ -148,10 +142,33 @@ export const randomNumber = (min: number, max: number) => {
   return Math.floor(maxNumber) + min;
 };
 
+const matchDayGenerated = (
+  indexRound: number,
+  index: number,
+  team: number
+): Date => {
+  const date = new Date(
+    Date.now() +
+      (indexRound * team + index + indexRound * 4) * 60 * 60 * 1000 * 24
+  );
+  date.setMinutes(0);
+  date.setSeconds(0);
+  if (team < 6) {
+    date.setHours(16 + index);
+  } else if (team >= 6 && team < 11) {
+    date.setHours(12 + index);
+  } else {
+    date.setHours(7 + index);
+  }
+
+  return date;
+};
+
 export const convertTeamsGeneratedToMatches = (
-  teamGenerated: Team[],
+  teamGenerated: Match[],
   tournamentId: string,
-  round?: string
+  round: string,
+  indexRound: number
 ): Match[] => {
   const matches = [];
   const team = teamGenerated.length;
@@ -159,12 +176,13 @@ export const convertTeamsGeneratedToMatches = (
     matches.push({
       id: nanoid(),
       tournamentId: tournamentId,
-      team1: teamDuo[0],
-      team2: teamDuo[1],
-      score1: "0",
-      score2: "0",
+      home: teamDuo[0],
+      away: teamDuo[1],
+      homeResult: "0",
+      awayResult: "0",
       round: round,
       createdAt: new Date(Date.now()),
+      matchDay: matchDayGenerated(indexRound, index, team),
     });
   });
   return matches;
@@ -174,8 +192,8 @@ export const checkGhostTeamAndRemove = (matches: Match[]) => {
   // console.log(matches);
   const result = matches.filter((match) => {
     if (
-      match.team1.teamname === "ghostteam" ||
-      match.team2.teamname === "ghostteam"
+      match.home.teamname === "ghostteam" ||
+      match.away.teamname === "ghostteam"
     ) {
       return false;
     } else {

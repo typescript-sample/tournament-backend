@@ -1,15 +1,35 @@
 import { Attributes, DateRange, Filter, Repository, Service } from "onecore";
+// import { Player } from "../player/player";
 import { Team } from "../team/team";
 
 export interface Match {
   id: string;
   tournamentId: string;
   round: string;
-  team1: Team;
-  team2: Team;
-  score1: string;
-  score2: string;
+  home: Team;
+  away: Team;
+  homeResult: string;
+  awayResult: string;
   createdAt: Date;
+  matchDay: Date;
+
+  referee?: string;
+  spectators?: string;
+
+  assistance?: Player;
+  process?: Process[];
+}
+
+interface Process {
+  type: string;
+  mins: string;
+  player: Player[];
+  side: string;
+}
+interface Player {
+  name: string;
+  image: string;
+  playernumber: number;
 }
 
 export interface MatchRepository extends Repository<Match, string> {
@@ -31,26 +51,34 @@ export const matchModel: Attributes = {
   round: {
     required: true,
   },
-  team1: {
+  home: {
     required: true,
   },
-  team2: {
+  away: {
     required: true,
   },
-  score1: {},
-  score2: {},
+  homeResult: {},
+  awayResult: {},
   createdAt: {
     type: "datetime",
   },
+  matchDay: {},
+  assistance: {},
+  process: {},
 };
 
 export interface MatchFilter extends Filter {
   id: string;
   tournamentId: string;
   round: string;
-  team1: Team;
-  team2: Team;
-  score1: string;
-  score2: string;
+  home: Team;
+  away: Team;
+  homeResult: string;
+  awayResult: string;
   createdAt: Date;
+  matchDay: Date;
+  referee?: string;
+  spectators?: string;
+  assistance?: string;
+  process?: string;
 }
